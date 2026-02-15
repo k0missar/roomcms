@@ -4,6 +4,11 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersEntity } from './users/users.entity';
+import { RoomtypeModule } from './roomtype/roomtype.module';
+import { RoomModule } from './room/room.module';
+import { BookingModule } from './booking/booking.module';
+import { ReviewsModule } from './reviews/reviews.module';
+import { StafflocationModule } from './stafflocation/stafflocation.module';
 
 @Module({
   imports: [
@@ -19,6 +24,11 @@ import { UsersEntity } from './users/users.entity';
       entities: [UsersEntity],
     }),
     UsersModule,
+    RoomtypeModule,
+    RoomModule,
+    BookingModule,
+    ReviewsModule,
+    StafflocationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
