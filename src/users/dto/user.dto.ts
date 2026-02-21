@@ -16,6 +16,9 @@ export class UserDto {
   email: string;
 
   @Expose()
+  password: string;
+
+  @Expose()
   role: UserRole;
 
   @Expose()
