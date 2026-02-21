@@ -1,8 +1,13 @@
 import { Injectable } from '@nestjs/common';
 
+interface IndexResponse {
+  title: string;
+  message: string;
+}
+
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'Hello World!';
+  getHello(): IndexResponse {
+    return { title: 'Название', message: 'Сообщение' };
   }
 }
