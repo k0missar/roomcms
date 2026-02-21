@@ -9,6 +9,8 @@ import { RoomModule } from './room/room.module';
 import { BookingModule } from './booking/booking.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { StafflocationModule } from './stafflocation/stafflocation.module';
+import { AuthModule } from './auth/auth.module';
+import { JwtGlobalModule } from './jwt.global.module';
 
 @Module({
   imports: [
@@ -29,6 +31,8 @@ import { StafflocationModule } from './stafflocation/stafflocation.module';
     BookingModule,
     ReviewsModule,
     StafflocationModule,
+    AuthModule,
+    JwtGlobalModule,
   ],
   controllers: [AppController],
   providers: [AppService],
