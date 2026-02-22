@@ -1,6 +1,6 @@
 div(class='login')
     if user
-        div(class='login__name')= user.userId
+        div(class='login__name')= user.name
         button(class='login__logout') Выйти
     else
         form(class='login__form' action='/auth/login' method='post')
