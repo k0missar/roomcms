@@ -1,14 +1,14 @@
-import { Controller, Get, Render, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Render, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
 import { OptionalAuthGuard } from './auth/optional.auth.guard';
-import { JwtPayload } from './auth/auth.types';
-
-type RequestWithUser = Request & { user?: any };
+import type { JwtPayload } from './auth/auth.types';
+import { CurrentUser } from './common/decorators/current-user.decorator';
+import { UserDataDto } from './users/dto/userdata.dto';
 
 interface IndexResponse {
   title: string;
   message: string;
-  user?: JwtPayload;
+  user?: UserDataDto | null;
 }
 
 @Controller()
@@ -18,7 +18,7 @@ export class AppController {
   @Get()
   @Render('index')
   @UseGuards(OptionalAuthGuard)
-  getHello(@Req() req: RequestWithUser): IndexResponse {
-    return this.appService.getHello(req.user);
+  getHello(@CurrentUser() user: JwtPayload): Promise<IndexResponse> {
+    return this.appService.getHello(user);
   }
 }
