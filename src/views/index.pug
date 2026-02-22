@@ -2,5 +2,11 @@ doctype html
 html
     head
         title= title
+        link(rel="stylesheet", href="/css/style.css")
+        script(src="/js/main.js")
     body
+        include ./components/header.pug
         h1= message
+
+        if user
+          div= user.userId
