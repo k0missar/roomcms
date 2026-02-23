@@ -5,6 +5,13 @@ import { UserDataDto } from './users/dto/userdata.dto';
 import { RoomService } from './room/room.service';
 import { RoomDto } from './room/dto/room.dto';
 import { BookingService } from './booking/booking.service';
+import { BookingEntity } from './booking/booking.entity';
+
+interface RoomWithBookingFlags extends RoomDto {
+  isBooked: boolean; // есть активная бронь
+  isBookedByCurrentUser: boolean; // бронь именно этого пользователя
+  bookingId?: string | null; // id его брони (если есть)
+}
 
 interface IndexResponse {
   title: string;
@@ -30,22 +37,33 @@ export class AppService {
 
     const roomData: RoomDto[] = await this.roomService.findAll();
 
-    const [bookings] = await this.bookingService.findAll({
-      status: undefined,
-    } as any);
+    const [bookings, total]: [BookingEntity[], number] =
+      await this.bookingService.findAll({} as any);
 
-    const bookedRoomIds = new Set(
-      bookings.map((b) => b.room.id), // или b.roomId, в зависимости от сущности
-    );
+    const roomsWithFlag: RoomWithBookingFlags[] = roomData.map((room) => {
+      // брони по этой комнате
+      const roomBookings: BookingEntity[] = bookings.filter(
+        (b) => b.room.id === room.id, // если у сущности поле roomId, используй b.roomId
+      );
 
-    const roomsWithFlag = roomData.map((room) => ({
-      ...room,
-      isBooked: bookedRoomIds.has(room.id),
-    }));
+      // бронь именно текущего пользователя (если он есть)
+      const bookedByCurrentUser: BookingEntity | undefined =
+        user != null
+          ? roomBookings.find((b) => b.user.id === user.userId) // или b.userId
+          : undefined;
+
+      return {
+        ...room,
+        isBooked: roomBookings.length > 0,
+        isBookedByCurrentUser: bookedByCurrentUser != null,
+        bookingId: bookedByCurrentUser ? bookedByCurrentUser.id : null,
+      };
+    });
+
     console.log(roomsWithFlag);
     return {
-      title: 'Название',
-      message: 'Сообщение',
+      title: 'Room CMS',
+      message: 'Добро пожаловать в Room CMS',
       user: userData,
       rooms: roomsWithFlag,
     };

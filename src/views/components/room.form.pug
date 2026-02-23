@@ -1,0 +1,14 @@
+div(class='room-form js-room-form')
+    form(class='room-form__form js-form' method='post')
+        div(class='room-form__field')
+            input(name='checkIn' id='date' class='room-form__input' type='date')
+            label(for='date') Дата начала бронирования
+        div(class='room-form__field')
+            input(name='checkOut' id='odate' class='room-form__input' type='date')
+            label(for='odate') Дата окончания бронирования
+        div(class='room-form__field')
+            textarea(name='comment')
+        input(name='userId' type='hidden' class='js-fr-user-id')
+        input(name='roomId' type='hidden' class='js-fr-room-id')
+        input(name='totalPrice' type='hidden' class='js-fr-price')
+        button(type='submit') Забронировать
