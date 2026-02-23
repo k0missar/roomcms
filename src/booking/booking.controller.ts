@@ -3,6 +3,7 @@ import {
   Post,
   Get,
   Patch,
+  Delete,
   Body,
   Param,
   Query,
@@ -117,5 +118,13 @@ export class BookingController {
       }),
       total,
     };
+  }
+
+  @Delete(':id')
+  async deleteMyBooking(
+    @CurrentUser() user: JwtPayload,
+    @Param('id') id: string,
+  ): Promise<void> {
+    await this.bookingService.deleteForUser(user.userId, id);
   }
 }

@@ -23,6 +23,8 @@ export class BookingService {
     private readonly roomRepo: Repository<RoomEntity>,
     @InjectRepository(UsersEntity)
     private readonly userRepo: Repository<UsersEntity>,
+    @InjectRepository(BookingEntity)
+    private readonly bookingRepository: Repository<BookingEntity>,
   ) {}
 
   /**
@@ -59,7 +61,7 @@ export class BookingService {
     // Пример: нельзя бронировать в прошлом
     const now = new Date();
     if (checkOut <= now) {
-      throw new BadRequestException('Cannot book in the past');
+      throw new BadRequestException('Нельзя бронировать в прошлом');
     }
 
     // Проверяем, нет ли пересечения бронирований по этой комнате
@@ -248,5 +250,27 @@ export class BookingService {
 
     const count = await qb.getCount();
     return count > 0;
+  }
+
+  /**
+   * Удалить бронь, принадлежащую конкретному пользователю.
+   * @param userId - id пользователя из JWT (current user)
+   * @param bookingId - id брони
+   */
+  async deleteForUser(
+    userId: string,
+    bookingId: string,
+  ): Promise<{ success: true }> {
+    const booking = await this.bookingRepository.findOne({
+      where: { id: bookingId, userId },
+    });
+
+    if (!booking) {
+      throw new NotFoundException('Бронь не найдена');
+    }
+
+    await this.bookingRepository.remove(booking);
+
+    return { success: true };
   }
 }

@@ -17,6 +17,9 @@ export class BookingEntity {
   @PrimaryGeneratedColumn('uuid', { comment: 'PK UUID бронирования' })
   id: string;
 
+  @Column()
+  userId: string;
+
   @ManyToOne(() => UsersEntity, (user) => user.bookings, {
     nullable: false,
     onDelete: 'CASCADE',
