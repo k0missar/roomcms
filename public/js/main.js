@@ -145,4 +145,25 @@ window.addEventListener('DOMContentLoaded', () => {
         })
       })
   }
+
+  // Слушание броней
+  (function () {
+    if (typeof io === 'undefined') {
+      console.warn('socket.io not loaded');
+      return;
+    }
+
+    const socket = io(); // к текущему домену
+
+    // любую смену состояния брони считаем поводом перезагрузить страницу
+    socket.on('booking:updated', (payload) => {
+      console.log('booking updated', payload);
+      window.location.reload();
+    });
+
+    socket.on('booking:deleted', (payload) => {
+      console.log('booking deleted', payload);
+      window.location.reload();
+    });
+  })();
 })

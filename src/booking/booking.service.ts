@@ -13,12 +13,14 @@ import { CreateBookingDto } from './dto/createbooking.dto';
 import { UpdateBookingDto } from './dto/updatebooking.dto';
 import { BookingFilterDto } from './dto/bookingfilter.dto';
 import { BookingStatus } from '../shared/enum';
+import { BookingGateway } from './booking.gateway';
 
 @Injectable()
 export class BookingService {
   constructor(
     @InjectRepository(BookingEntity)
     private readonly bookingRepo: Repository<BookingEntity>,
+    private readonly bookingGateway: BookingGateway,
     @InjectRepository(RoomEntity)
     private readonly roomRepo: Repository<RoomEntity>,
     @InjectRepository(UsersEntity)
@@ -39,19 +41,19 @@ export class BookingService {
 
     const user = await this.userRepo.findOne({ where: { id: finalUserId } });
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Пользователь не найден');
     }
 
     const room = await this.roomRepo.findOne({ where: { id: dto.roomId } });
     if (!room) {
-      throw new NotFoundException('Room not found');
+      throw new NotFoundException('Номер не найден');
     }
 
     const checkIn = new Date(dto.checkIn);
     const checkOut = new Date(dto.checkOut);
 
     if (Number.isNaN(checkIn.getTime()) || Number.isNaN(checkOut.getTime())) {
-      throw new BadRequestException('Invalid dates');
+      throw new BadRequestException('Неверная дата');
     }
 
     if (checkOut <= checkIn) {
@@ -80,7 +82,15 @@ export class BookingService {
       status: BookingStatus.CONFIRMED,
     });
 
-    return this.bookingRepo.save(booking);
+    const saved = await this.bookingRepo.save(booking);
+
+    this.bookingGateway.broadcastBookingUpdated({
+      bookingId: saved.id,
+      roomId: dto.roomId,
+      status: saved.status,
+    });
+
+    return saved;
   }
 
   /**
@@ -147,7 +157,7 @@ export class BookingService {
     });
 
     if (!booking) {
-      throw new NotFoundException('Booking not found');
+      throw new NotFoundException('Бронирование не найдено');
     }
 
     if (booking.user.id !== currentUserId) {
@@ -203,7 +213,7 @@ export class BookingService {
   }
 
   /**
-   * Смена статуса (обычно для админа/менеджера, роли можно добавить отдельно)
+   * Смена статуса
    */
   async updateStatus(
     bookingId: string,
@@ -263,13 +273,20 @@ export class BookingService {
   ): Promise<{ success: true }> {
     const booking = await this.bookingRepository.findOne({
       where: { id: bookingId, userId },
+      relations: ['room'],
     });
 
     if (!booking) {
       throw new NotFoundException('Бронь не найдена');
     }
 
+    const roomId = booking.room.id;
     await this.bookingRepository.remove(booking);
+
+    this.bookingGateway.broadcastBookingDeleted({
+      bookingId,
+      roomId,
+    });
 
     return { success: true };
   }
