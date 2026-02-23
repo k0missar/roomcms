@@ -115,4 +115,34 @@ window.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // ОТМЕНИТЬ БРОНЬ
+  const bookingCancelBtn = document.querySelectorAll('.js-booking-cancel');
+  if (bookingCancelBtn) {
+    bookingCancelBtn.forEach((button) => {
+      button.addEventListener('click', (event) => {
+        const room = button.closest('.js-room')
+        const bookingId = room.dataset.booking;
+        fetch('/bookings/' + bookingId, {
+          method: 'DELETE',
+          credentials: 'same-origin',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error('Ошибка удаления брони');
+            }
+            return null;
+          })
+          .then(() => {
+            window.location.reload();
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+        })
+      })
+  }
 })
