@@ -4,11 +4,13 @@ import { OptionalAuthGuard } from './auth/optional.auth.guard';
 import type { JwtPayload } from './auth/auth.types';
 import { CurrentUser } from './common/decorators/current-user.decorator';
 import { UserDataDto } from './users/dto/userdata.dto';
+import { RoomDto } from './room/dto/room.dto';
 
 interface IndexResponse {
   title: string;
   message: string;
   user?: UserDataDto | null;
+  rooms?: RoomDto[] | null;
 }
 
 @Controller()
