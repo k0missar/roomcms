@@ -1,10 +1,12 @@
 - const userId = user && user.id ? user.id : ''
+- const bookingId = room && room.bookingId ? room.bookingId : ''
 
 article(
     class='room js-room'
     data-user=userId
     data-room=room.id
     data-price=room.price
+    data-booking=bookingId
     )
     header(class='room__header')
         div(class='room__src')
@@ -18,7 +20,7 @@ article(
         div(class='room__status')= room.status
         div(class='room__price')= room.price
         if room.isBooked && room.isBookedByCurrentUser
-            button(class='room__btn --cancel') Отменить бронирование
+            button(class='room__btn --cancel js-booking-cancel') Отменить бронирование
         else if room.isBooked
             button(class='room__btn --confirmed') Забронировано
         else
