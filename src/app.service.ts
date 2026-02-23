@@ -60,7 +60,6 @@ export class AppService {
       };
     });
 
-    console.log(roomsWithFlag);
     return {
       title: 'Room CMS',
       message: 'Добро пожаловать в Room CMS',

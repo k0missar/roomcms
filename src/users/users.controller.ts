@@ -1,6 +1,7 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body } from '@nestjs/common';
 import { UsersService } from './users.service';
-// import { UsersDto } from './dto/users.dto';
+import { UserDto } from './dto/user.dto';
+import { GetUserDto } from './dto/getuser.dto';
 // import { UpdateUserDto } from './dto/updateUsers.dto';
 
 @Controller('users')
@@ -8,25 +9,22 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get()
-  findAll() {
-    return { status: 'active' };
+  findAll(): Promise<GetUserDto[]> {
+    return this.usersService.findAll();
   }
 
   @Get(':email')
   findOne(@Param('email') email: string) {
     return this.usersService.findOne(email);
   }
-  // @Get(':id')
-  // userById(@Param('id') id: string) {
-  //   return this.usersService.userById(Number(id));
-  // }
-  // @Post()
-  // create(@Body() dto: UsersDto) {
-  //   return this.usersService.create(dto);
-  // }
-  //
-  // @Put(':id')
-  // update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
-  //   return this.usersService.update(Number(id), dto);
-  // }
+
+  @Get('id/:id')
+  userById(@Param('id') id: string) {
+    return this.usersService.userById(id);
+  }
+
+  @Post()
+  create(@Body() dto: UserDto) {
+    return this.usersService.create(dto);
+  }
 }

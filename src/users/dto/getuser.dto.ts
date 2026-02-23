@@ -4,7 +4,7 @@ import { UserRole } from '../../shared/enum';
 /**
  * DTO для ответов API — публичное представление пользователя.
  */
-export class UserDto {
+export class GetUserDto {
   @Expose()
   id: string;
 
@@ -13,9 +13,6 @@ export class UserDto {
 
   @Expose()
   email: string;
-
-  @Expose()
-  password: string;
 
   @Expose()
   role: UserRole;
