@@ -8,5 +8,5 @@ html
         include ./components/header.pug
         h1= message
 
-        if user
-          div= user.userId
+        if rooms && rooms.length
+            include ./components/room.list.pug
