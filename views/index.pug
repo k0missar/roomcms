@@ -6,8 +6,8 @@ html
         script(src="/js/main.js")
         script(src="/socket.io/socket.io.js")
     body
-        include ./components/header.pug
+        include components/header
         h1= message
 
         if rooms && rooms.length
-            include ./components/room.list.pug
+            include components/room.list.pug

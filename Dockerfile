@@ -28,6 +28,7 @@ RUN npm install --only=production
 # Копируем собранный код из builder-слоя
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/public ./public
+COPY --from=builder /app/views ./views
 
 # Переменные окружения (минимум)
 ENV NODE_ENV=production
